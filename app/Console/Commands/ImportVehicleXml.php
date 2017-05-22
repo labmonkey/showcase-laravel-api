@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use XmlParser;
 
 class ImportVehicleXml extends Command {
 	/**
@@ -46,16 +46,49 @@ class ImportVehicleXml extends Command {
 		echo $filePath;
 		echo "\r\n";
 
-		$contents = File::get( $filePath );
-
-		$result = $this->importXml( $contents );
+		$result = $this->importXml( $filePath );
 
 		echo "File import status is: " . ( $result ? "OK!" : "ERROR" );
 		echo "\r\n";
 	}
 
-	public function importXml($contents) {
+	public function importXml( $filePath ) {
+		$xml = XmlParser::load( $filePath );
 
-		return false;
+		$attributes = [
+			'::manufacturer',
+			'::model',
+			'type',
+			'usage',
+			'license_plate',
+			'weight_category',
+			'no_seats',
+			'has_boot',
+			'has_trailer',
+			'owner_name',
+			'owner_company',
+			'owner_profession',
+			'transmission',
+			'colour',
+			'is_hgv',
+			'no_doors',
+			'sunroof',
+			'has_gps',
+			'no_wheels',
+			'engine_cc',
+			'fuel_type'
+		];
+
+		$param = implode( ',', $attributes );
+
+		$item = $xml->parse( [
+			'Vehicles' => [
+				'uses' => "Vehicle[{$param}]"
+			]
+		] );
+
+		dd( $item );
+
+		return count( $item ) > 0;
 	}
 }
