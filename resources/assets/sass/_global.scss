@@ -1,0 +1,67 @@
+body {
+  position: relative;
+}
+
+.background {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  .background__left {
+    position: absolute;
+    background: $color-dark;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 50%;
+  }
+  .background__right {
+    position: absolute;
+    background: $color-light;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+.nav {
+  &.nav--main {
+    text-align: right;
+    & > li {
+      & > a {
+        color: $color-light;
+        padding: 0;
+      }
+    }
+  }
+}
+
+.panel {
+  &.panel--vehicle {
+    margin: 15px 0;
+    &:first-child {
+      margin-top: 5px;
+    }
+
+    dd , dt{
+      display: inline-block;
+    }
+    dt {
+
+    }
+  }
+}
+
+.header--left {
+  color: $color-nice;
+  text-align: right;
+  margin-bottom: 5px;
+}
+
+.header--right {
+  color: $color-dark;
+  text-align: left;
+  margin-bottom: 5px;
+}

@@ -1,92 +1,99 @@
-<!doctype html>
-<html lang="{{ config('app.locale') }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layout.base')
 
-        <title>Laravel</title>
+@section('head')
+    <title>CARS API</title>
+@endsection
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Raleway', sans-serif;
-                font-weight: 100;
-                height: 100vh;
-                margin: 0;
-            }
+@section('content')
+    <div class="background">
+        <div class="background__left">
 
-            .full-height {
-                height: 100vh;
-            }
+        </div>
+        <div class="background__right">
 
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="row">
-                @foreach ($vehicleModels as $vehicleModel)
-                    <div class="col-md-4">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">Vehicle</div>
-                            <div class="panel-body">
-                                @foreach ($vehicleModel->toArray() as $attribute => $value)
-                                    <dl>
-                                        <dd>
-                                            {{$attribute}}:
-                                        </dd>
-                                        <dt>
-                                            {{$value}}
-                                        </dt>
-                                    </dl>
-                                @endforeach
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 col-md-offset-4">
+                <h1 class="header--left">CARS</h1>
+                <div class="#navbar-main">
+                    <ul class="nav nav--main nav--vehicles">
+                        @foreach ($vehicleModels as $vehicleModel)
+                            <li>
+                                <a href="#vehicle-{{$vehicleModel->id}}">{{$vehicleModel->manufacturer}} {{$vehicleModel->model}}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h1 class="header--right">API</h1>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-default panel--vehicle">
+                                    <div class="panel-heading">Welcome!</div>
+                                    <div class="panel-body">
+                                        <ul class="list-unstyled">
+                                            <li><a href="{{ url('api')}}">/api</a> - return all cars</li>
+                                            <li><a href="{{ url('api/car')}}">/api/car</a> -
+                                                return random car
+                                            </li>
+                                            <li><a href="{{ url('api/car/5', ['id' => 5])}}">/api/car/5</a>
+                                                - return car by ID
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
+                            @foreach ($vehicleModels as $vehicleModel)
+                                <div class="col-md-12">
+                                    <div id="vehicle-{{$vehicleModel->id}}" class="panel panel-default panel--vehicle">
+                                        <div class="panel-heading">{{$vehicleModel->manufacturer}} {{$vehicleModel->model}}</div>
+                                        <div class="panel-body">
+                                            <ul class="list-unstyled">
+                                                @foreach ($vehicleModel->toArray() as $attribute => $value)
+                                                    <li>
+                                                        <b>{{$attribute}}:</b> {{$value}}
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
-                @endforeach
+                </div>
             </div>
         </div>
-    </body>
-</html>
+    </div>
+@endsection
+
+@section('contentt')
+    <div class="container">
+        <div class="row">
+            @foreach ($vehicleModels as $vehicleModel)
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Vehicle</div>
+                        <div class="panel-body">
+                            @foreach ($vehicleModel->toArray() as $attribute => $value)
+                                <dl>
+                                    <dd>
+                                        {{$attribute}}:
+                                    </dd>
+                                    <dt>
+                                        {{$value}}
+                                    </dt>
+                                </dl>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endsection
