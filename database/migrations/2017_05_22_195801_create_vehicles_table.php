@@ -16,6 +16,7 @@ class CreateVehiclesTable extends Migration
 	    Schema::create( 'vehicles', function ( Blueprint $table ) {
 		    $table->increments( 'id' );
 		    $table->timestamps();
+		    // Add ->nullable() ?
 		    $table->string( 'manufacturer' );
 		    $table->string( 'model' );
 		    $table->string( 'type' );
@@ -23,7 +24,7 @@ class CreateVehiclesTable extends Migration
 		    $table->string( 'license_plate' );
 		    $table->integer( 'weight_category' );
 		    $table->integer( 'no_seats' );
-		    $table->boolean( 'has_boot' );
+		    $table->boolean( 'has_boot' )->nullable();
 		    $table->boolean( 'has_trailer' );
 		    $table->string( 'owner_name' );
 		    $table->string( 'owner_company' );
