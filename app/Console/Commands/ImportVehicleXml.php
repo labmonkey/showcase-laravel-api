@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Vehicle;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use XmlParser;
@@ -20,6 +21,10 @@ class ImportVehicleXml extends Command {
 	 * @var string
 	 */
 	protected $description = 'Import XML from given file path';
+
+	protected $updatedCount = 0;
+
+	protected $insertedCount = 0;
 
 	/**
 	 * Create a new command instance.
@@ -42,14 +47,14 @@ class ImportVehicleXml extends Command {
 			$filePath = Storage::disk( 'local' )->getDriver()->getAdapter()->applyPathPrefix( 'local/VehicleSample.xml' );
 		}
 
-		echo "Your file is: \r\n";
-		echo $filePath;
-		echo "\r\n";
+		$this->info( "Your file is:" );
+		$this->info( $filePath );
 
 		$result = $this->importXml( $filePath );
 
-		echo "File import status is: " . ( $result ? "OK!" : "ERROR" );
-		echo "\r\n";
+		$this->info( "File import status is: " . ( $result ? "OK!" : "ERROR" ) );
+
+		return 1;
 	}
 
 	public function importXml( $filePath ) {
@@ -81,14 +86,49 @@ class ImportVehicleXml extends Command {
 
 		$param = implode( ',', $attributes );
 
-		$item = $xml->parse( [
+		$items = $xml->parse( [
 			'Vehicles' => [
 				'uses' => "Vehicle[{$param}]"
 			]
 		] );
 
-		dd( $item );
+		if ( isset( $items ['Vehicles'] ) ) {
+			$this->saveVehicleData( $items['Vehicles'] );
 
-		return count( $item ) > 0;
+			return $this->updatedCount + $this->insertedCount > 0;
+		}
+
+		return false;
+	}
+
+	public function saveVehicleData( $data ) {
+		foreach ( $data as $item ) {
+			$store  = Vehicle::firstOrNew( [ 'license_plate' => $item['license_plate'] ] );
+			$exists = $store->exists;
+
+			$item = $this->fixKeys( $item );
+
+			$store->fill( $item );
+			$store->save();
+			if ( $exists ) {
+				$this->updatedCount ++;
+			} else {
+				$this->insertedCount ++;
+			}
+		}
+
+		$this->info( "Updated: " . $this->updatedCount );
+		$this->info( "Inserted: " . $this->insertedCount );
+	}
+
+	function fixKeys( $array ) {
+		$keys = array_keys( $array );
+		array_walk( $keys, [ $this, 'removePrefix' ], '::' );
+
+		return array_combine( $keys, $array );
+	}
+
+	function removePrefix( &$value, $omit, $prefix ) {
+		$value = str_replace( $prefix, '', $value );
 	}
 }
