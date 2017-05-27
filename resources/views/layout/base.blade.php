@@ -20,7 +20,7 @@
     <script type="text/javascript" src="{{ URL::asset('js/app.js') }}"></script>
     @yield('head')
 </head>
-<body data-spy="scroll" data-target="#navbar-main">
+<body>
 @yield('content')
 </body>
 </html>

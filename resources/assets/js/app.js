@@ -5,3 +5,8 @@
  */
 
 require('./bootstrap');
+
+$(document).ready(function () {
+    $('body').scrollspy({target: '#navbar-main', offset: 30});
+    $("#navbar-main").stick_in_parent({parent: $("body"), offset_top: 15})
+});
