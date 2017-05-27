@@ -10,7 +10,7 @@
                 return random car
             </li>
             <li>
-                <a href="{{ url('public/api/car/5', ['id' => 5])}}">/public/api/car/5</a>
+                <a href="{{ url('public/api/car', ['id' => 5])}}">/public/api/car/5</a>
                 - return car by ID
             </li>
         </ul>
