@@ -12,3 +12,9 @@
 */
 
 Route::get( '/', 'SiteController@index' );
+
+Route::get( 'public/api', 'ApiController@actionPublicIndex' );
+Route::get( 'public/api/car/{id?}', 'ApiController@actionPublicCar' );
+
+Route::get( 'api', 'ApiController@actionIndex' );
+Route::get( 'api/key', 'ApiController@actionKey' );
