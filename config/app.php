@@ -178,6 +178,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
 	    Orchestra\Parser\XmlServiceProvider::class,
+	    Sofa\Eloquence\ServiceProvider::class
     ],
 
     /*
