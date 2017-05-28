@@ -49,4 +49,4 @@ The theme is built using laravel-mix, SCSS and jQuery. It's using Twitter Bootst
 - `routes/web.php` - routes config
 - `storage/app/local/VehicleSample.xml` - example file that is used to import data
 - `database/migrations` - creates database tables
-- `config/custom.php` - contains custom config params
+- `config/api.php` - contains custom config params

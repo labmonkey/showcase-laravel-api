@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\ApiQuota;
 use Closure;
+use Illuminate\Support\Facades\Config;
 
 class VerifyApiQuota {
 	/**
@@ -31,8 +32,8 @@ class VerifyApiQuota {
 			$quota           = new ApiQuota();
 			$quota->key      = $request->key;
 			$quota->quota    = 1;
-			$quota->maxQuota = 5;
-			$quota->expires  = strtotime( '+24 hours' );
+			$quota->maxQuota = Config::get( 'api.maxQuota' );
+			$quota->expires  = strtotime( Config::get( 'api.expiration' ) );
 			$quota->save();
 		}
 
