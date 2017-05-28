@@ -2,15 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiKey;
 use App\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 
-class ApiController extends Controller {
+class ApiController extends BaseController {
 
 	public function actionIndex( Request $request ) {
+		$json = [];
+
+		return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
 	}
 
 	public function actionKey() {
+		$apiKey      = new ApiKey();
+		$apiKey->key = ApiKey::generateKey();
+		$apiKey->save();
+
+		$json = [
+			'key' => $apiKey->key
+		];
+
+		return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
 	}
 
 	public function actionPublicIndex() {
