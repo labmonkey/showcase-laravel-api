@@ -17,6 +17,7 @@ class ApiController extends BaseController {
 		$json = [
 			'success' => true,
 			'query'   => $query,
+			'count'   => count( $models ),
 			'data'    => $models
 		];
 
