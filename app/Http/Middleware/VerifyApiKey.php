@@ -7,7 +7,7 @@ use Closure;
 
 class VerifyApiKey {
 	/**
-	 * Handle an incoming request.
+	 * Check if provided key is valid an exists.
 	 *
 	 * @param  \Illuminate\Http\Request $request
 	 * @param  \Closure $next

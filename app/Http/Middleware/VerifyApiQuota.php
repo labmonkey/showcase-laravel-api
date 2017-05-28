@@ -7,7 +7,7 @@ use Closure;
 
 class VerifyApiQuota {
 	/**
-	 * Handle an incoming request.
+	 * Check if provided key reached quota limit and deny access or increase quota counter.
 	 *
 	 * @param  \Illuminate\Http\Request $request
 	 * @param  \Closure $next

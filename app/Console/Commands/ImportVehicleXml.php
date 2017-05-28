@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Vehicle;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use XmlParser;
 
@@ -22,18 +23,15 @@ class ImportVehicleXml extends Command {
 	 */
 	protected $description = 'Import XML from given file path';
 
+	/*
+	 * Total number of updated records
+	 */
 	protected $updatedCount = 0;
 
-	protected $insertedCount = 0;
-
-	/**
-	 * Create a new command instance.
-	 *
-	 * @return void
+	/*
+	 * Total number of inserted records
 	 */
-	public function __construct() {
-		parent::__construct();
-	}
+	protected $insertedCount = 0;
 
 	/**
 	 * Execute the console command.
@@ -41,10 +39,10 @@ class ImportVehicleXml extends Command {
 	 * @return mixed
 	 */
 	public function handle() {
+		// get the file path  or use default
 		$filePath = $this->argument( 'filePath' );
 		if ( ! $filePath ) {
-			//$filePath = Storage::disk( 'local' )->url( 'local/VehicleSample.xml' );
-			$filePath = Storage::disk( 'local' )->getDriver()->getAdapter()->applyPathPrefix( 'local/VehicleSample.xml' );
+			$filePath = Storage::disk( 'local' )->getDriver()->getAdapter()->applyPathPrefix( Config::get( 'api.xmlPath' ) );
 		}
 
 		$this->info( "Your file is:" );
@@ -60,8 +58,9 @@ class ImportVehicleXml extends Command {
 	public function importXml( $filePath ) {
 		$xml = XmlParser::load( $filePath );
 
+		// define names that should be parsed
 		$attributes = [
-			'::manufacturer',
+			'::manufacturer', // :: means attribute instead of node
 			'::model',
 			'type',
 			'usage',
@@ -95,6 +94,7 @@ class ImportVehicleXml extends Command {
 		if ( isset( $items ['Vehicles'] ) ) {
 			$this->saveVehicleData( $items['Vehicles'] );
 
+			// if any DB action was done then return 'true'
 			return $this->updatedCount + $this->insertedCount > 0;
 		}
 
@@ -103,6 +103,7 @@ class ImportVehicleXml extends Command {
 
 	public function saveVehicleData( $data ) {
 		foreach ( $data as $item ) {
+			// I assume that license plates are unique
 			$store  = Vehicle::firstOrNew( [ 'license_plate' => $item['license_plate'] ] );
 			$exists = $store->exists;
 
@@ -121,6 +122,13 @@ class ImportVehicleXml extends Command {
 		$this->info( "Inserted: " . $this->insertedCount );
 	}
 
+	/**
+	 * Removes Orchestral library prefix from keys so Eloguent->fill method can be used
+	 *
+	 * @param $array
+	 *
+	 * @return array
+	 */
 	function fixKeys( $array ) {
 		$keys = array_keys( $array );
 		array_walk( $keys, [ $this, 'removePrefix' ], '::' );

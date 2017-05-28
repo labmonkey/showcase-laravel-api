@@ -19,6 +19,11 @@ class ApiKey extends Model {
 		'key',
 	];
 
+	/**
+	 * Generates random and unique API key.
+	 *
+	 * @return string
+	 */
 	public static function generateKey() {
 		return md5( uniqid( rand(), true ) );
 	}

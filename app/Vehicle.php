@@ -8,6 +8,16 @@ use Sofa\Eloquence\Eloquence;
 class Vehicle extends Model {
 	use Eloquence;
 
+	/**
+	 * The table associated with the model.
+	 *
+	 * @var string
+	 */
+	protected $table = 'vehicles';
+
+	/*
+	 * For eloquence full text search
+	 */
 	protected $searchableColumns = [
 		'manufacturer',
 		'model',
@@ -31,12 +41,6 @@ class Vehicle extends Model {
 		'engine_cc',
 		'fuel_type'
 	];
-	/**
-	 * The table associated with the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'vehicles';
 
 	/*
 	 * Allows those attributes to be set and saved

@@ -23,6 +23,13 @@ class ApiQuota extends Model {
 		'maxQuota'
 	];
 
+	/**
+	 * Returns quota model if there is one that did not expire or creates a new one.
+	 *
+	 * @param $apiKey
+	 *
+	 * @return static
+	 */
 	public static function getCurrent( $apiKey ) {
 		if ( ! ( $quota = ApiQuota::where( [ [ 'key', '=', $apiKey ], [ 'expires', '>', time() ] ] )->first() ) ) {
 			$quota           = new static();

@@ -9,6 +9,9 @@ use Illuminate\Routing\Controller as BaseController;
 
 class ApiController extends BaseController {
 
+	/**
+	 * This action performs full text search on Vehicles to find data based on 'query' string
+	 */
 	public function actionIndex( Request $request ) {
 		$query = $request->input( 'query' );
 
