@@ -3,7 +3,9 @@
         <h3 class="panel-title">Auth API playground</h3>
     </div>
     <div class="panel-body">
-        <form id="form-playground" class="form form-horizontal clearfix" action="{{url('api')}}">
+        <form id="form-playground" class="form form-horizontal clearfix" action="{{url('api')}}" autocomplete="off"
+              method="post">
+            {{ csrf_field() }}
             <div class="form-group">
                 <div class="col-md-3">
                     <label for="pg-key" class="control-label">Key</label>
@@ -15,7 +17,7 @@
                                type="text"
                                class="form-control">
                         <span class="input-group-btn">
-                            <button class="btn btn-primary"
+                            <button id="api-key-button" class="btn btn-primary"
                                     type="button">Get new</button>
                         </span>
                     </div>
@@ -29,6 +31,7 @@
                     <input id="pg-query"
                            name="query"
                            type="text"
+                           placeholder="Citroen"
                            class="form-control">
                 </div>
             </div>

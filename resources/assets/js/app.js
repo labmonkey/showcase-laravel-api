@@ -7,6 +7,33 @@
 require('./bootstrap');
 
 $(document).ready(function () {
-    $('body').scrollspy({target: '#navbar-main', offset: 30});
-    $("#navbar-main").stick_in_parent({parent: $("body"), offset_top: 15})
+    var $body = $("body");
+
+    $body.scrollspy({target: '#navbar-main', offset: 30});
+    $("#navbar-main").stick_in_parent({parent: $body, offset_top: 15});
+
+    $('#api-key-button').click(function () {
+        apiRequest('api/key', {}, function (data) {
+            $('#pg-key').val(data.key);
+        });
+    });
+
+    $('#form-playground').submit(function (e) {
+        e.preventDefault();
+        var key = $('#pg-key').val();
+        var query = $('#pg-query').val();
+        apiRequest('api', {key: key, query: query}, function (data) {
+            $("#api-result").text(JSON.stringify(data, null, 2));
+        });
+    });
 });
+
+function apiRequest(url, params, callback) {
+    params._token = window.Laravel.csrfToken;
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: params,
+        dataType: 'json'
+    }).always(callback);
+}

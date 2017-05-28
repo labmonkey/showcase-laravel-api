@@ -16,5 +16,6 @@ Route::get( '/', 'SiteController@index' );
 Route::get( 'public/api', 'ApiController@actionPublicIndex' );
 Route::get( 'public/api/car/{id?}', 'ApiController@actionPublicCar' );
 
-Route::post( 'api', 'ApiController@actionIndex' )->middleware('api.key', 'api.quota');
+Route::post( 'api', 'ApiController@actionIndex' )->middleware( 'api.key', 'api.quota' );
+Route::post( 'api/key', 'ApiController@actionKey' );
 Route::get( 'api/key', 'ApiController@actionKey' );
