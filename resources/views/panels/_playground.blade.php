@@ -7,10 +7,10 @@
               method="post">
             {{ csrf_field() }}
             <div class="form-group">
-                <div class="col-md-3">
+                <div class="col-xs-12 col-sm-3">
                     <label for="pg-key" class="control-label">Key</label>
                 </div>
-                <div class="col-md-9">
+                <div class="col-sm-9">
                     <div class="input-group">
                         <input id="pg-key"
                                name="key"
@@ -24,10 +24,10 @@
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-3">
+                <div class="col-xs-12 col-sm-3">
                     <label for="pg-query" class="control-label">Query</label>
                 </div>
-                <div class="col-md-9">
+                <div class="col-xs-12 col-sm-9">
                     <input id="pg-query"
                            name="query"
                            type="text"
