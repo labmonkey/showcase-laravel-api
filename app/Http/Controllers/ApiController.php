@@ -10,7 +10,15 @@ use Illuminate\Routing\Controller as BaseController;
 class ApiController extends BaseController {
 
 	public function actionIndex( Request $request ) {
-		$json = [];
+		$query = $request->input( 'query' );
+
+		$models = Vehicle::search( $query )->get();
+
+		$json = [
+			'success' => true,
+			'query'   => $query,
+			'data'    => $models
+		];
 
 		return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
 	}
