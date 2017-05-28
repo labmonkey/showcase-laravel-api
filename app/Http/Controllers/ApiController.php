@@ -25,9 +25,7 @@ class ApiController extends BaseController {
 	}
 
 	public function actionKey() {
-		$apiKey      = new ApiKey();
-		$apiKey->key = ApiKey::generateKey();
-		$apiKey->save();
+		$apiKey = ApiKey::generateModel();
 
 		$json = [
 			'key' => $apiKey->key

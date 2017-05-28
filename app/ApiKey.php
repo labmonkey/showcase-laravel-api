@@ -22,4 +22,12 @@ class ApiKey extends Model {
 	public static function generateKey() {
 		return md5( uniqid( rand(), true ) );
 	}
+
+	public static function generateModel() {
+		$apiKey      = new ApiKey();
+		$apiKey->key = ApiKey::generateKey();
+		$apiKey->save();
+
+		return $apiKey;
+	}
 }
