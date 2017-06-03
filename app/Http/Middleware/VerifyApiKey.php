@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\ApiKey;
+use App\Models\ApiKey;
 use Closure;
 
 class VerifyApiKey {

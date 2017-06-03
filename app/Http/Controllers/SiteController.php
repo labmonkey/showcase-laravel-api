@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Vehicle;
+use App\Models\Vehicle;
 
 class SiteController extends Controller {
 	public function index() {

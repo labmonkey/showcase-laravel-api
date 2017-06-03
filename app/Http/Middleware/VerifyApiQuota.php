@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\ApiQuota;
+use App\Models\ApiQuota;
 use Closure;
 
 class VerifyApiQuota {

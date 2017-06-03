@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\ApiKey;
-use App\Vehicle;
+use App\Models\ApiKey;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Vehicle;
+use App\Models\Vehicle;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
