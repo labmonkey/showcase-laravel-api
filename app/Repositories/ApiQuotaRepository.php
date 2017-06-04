@@ -19,7 +19,7 @@ class ApiQuotaRepository extends EloquentRepository implements ApiQuotaRepositor
 
 	public function findCurrentQuotaForKey( $apiKey ) {
 		if ( ! ( $quota = $this->findWhere( [ [ 'key', '=', $apiKey ], [ 'expires', '>', time() ] ] ) ) ) {
-			$this->create( [
+			return $this->create( [
 				'key'      => $apiKey,
 				'quota'    => 0,
 				'maxQuota' => Config::get( 'api.maxQuota' ),

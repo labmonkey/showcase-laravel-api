@@ -99,7 +99,8 @@ abstract class EloquentRepository {
 
 		$model = new $class();
 		$model->fill( $attributes );
+		$model->save();
 
-		return $model->save();
+		return $model;
 	}
 }
