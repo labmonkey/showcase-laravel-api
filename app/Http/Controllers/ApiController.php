@@ -4,11 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Components\JsonBuilder;
 use App\Models\ApiKey;
-use App\Models\Vehicle;
+use App\Repositories\Interfaces\VehicleRepositoryInterface;
+use App\Traits\JsonBuilderResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class ApiController extends Controller {
+	use JsonBuilderResponseTrait;
+
+	/* @var $repository VehicleRepositoryInterface */
+	protected $repository;
+
+	public function __construct( VehicleRepositoryInterface $repository ) {
+		$this->repository = $repository;
+	}
 
 	/**
 	 * This action performs full text search on Vehicles to find data based on 'query' string
@@ -16,7 +25,7 @@ class ApiController extends Controller {
 	public function actionIndex( Request $request ) {
 		$query = $request->input( 'query' );
 
-		$models = Vehicle::search( $query )->get();
+		$models = $this->repository->fullTextSearch( $query );
 
 		$jsonBuilder = new JsonBuilder();
 		$jsonBuilder->setParam( 'query', $query );
@@ -38,8 +47,9 @@ class ApiController extends Controller {
 
 	public function actionPublicIndex() {
 		$jsonBuilder = new JsonBuilder();
-		$models      = Vehicle::all();
-		if ( count( $models ) ) {
+		$models      = $this->repository->get();
+
+		if ( $models->count() ) {
 			$jsonBuilder->setSuccess();
 			$jsonBuilder->setData( $models );
 		} else {
@@ -52,8 +62,7 @@ class ApiController extends Controller {
 	public function actionPublicCar( $id = null ) {
 		$jsonBuilder = new JsonBuilder();
 		if ( ! $id ) {
-			// get random model
-			$model = Vehicle::inRandomOrder()->first();
+			$model = $this->repository->findRandom();
 			if ( $model ) {
 				$jsonBuilder->setSuccess();
 				$jsonBuilder->setData( $model );
@@ -61,8 +70,7 @@ class ApiController extends Controller {
 				$jsonBuilder->setError( "Database Error. Maybe it's empty?" );
 			}
 		} else {
-			// get model by id
-			$model = Vehicle::where( [ 'id' => $id ] )->first();
+			$model = $this->repository->find( $id );
 			if ( $model ) {
 				$jsonBuilder->setSuccess();
 				$jsonBuilder->setData( $model );
@@ -72,9 +80,5 @@ class ApiController extends Controller {
 		}
 
 		return $this->jsonResponse( $jsonBuilder );
-	}
-
-	protected function jsonResponse( $jsonBuilder ) {
-		return response()->json( $jsonBuilder->toArray(), 200, [], JSON_PRETTY_PRINT );
 	}
 }

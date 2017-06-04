@@ -2,13 +2,22 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Vehicle;
+use App\Repositories\Interfaces\VehicleRepositoryInterface;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use XmlParser;
 
 class ImportVehicleXml extends Command {
+	/* @var $repository VehicleRepositoryInterface */
+	protected $repository;
+
+	public function __construct( VehicleRepositoryInterface $repository ) {
+		$this->repository = $repository;
+
+		parent::__construct();
+	}
+
 	/**
 	 * The name and signature of the console command.
 	 *
@@ -104,8 +113,12 @@ class ImportVehicleXml extends Command {
 	public function saveVehicleData( $data ) {
 		foreach ( $data as $item ) {
 			// I assume that license plates are unique
-			$store  = Vehicle::firstOrNew( [ 'license_plate' => $item['license_plate'] ] );
-			$exists = $store->exists;
+			$store  = $this->repository->findBy( 'license_plate', $item['license_plate'] );
+			$exists = true;
+			if ( ! $store ) {
+				$store  = $this->repository->create();
+				$exists = false;
+			}
 
 			$item = $this->fixKeys( $item );
 

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
 
 class ApiQuota extends Model {
 	/**
@@ -22,24 +21,4 @@ class ApiQuota extends Model {
 		'quota',
 		'maxQuota'
 	];
-
-	/**
-	 * Returns quota model if there is one that did not expire or creates a new one.
-	 *
-	 * @param $apiKey
-	 *
-	 * @return static
-	 */
-	public static function getCurrent( $apiKey ) {
-		if ( ! ( $quota = ApiQuota::where( [ [ 'key', '=', $apiKey ], [ 'expires', '>', time() ] ] )->first() ) ) {
-			$quota           = new static();
-			$quota->key      = $apiKey;
-			$quota->quota    = 0;
-			$quota->maxQuota = Config::get( 'api.maxQuota' );
-			$quota->expires  = strtotime( Config::get( 'api.expiration' ) );
-			$quota->save();
-		}
-
-		return $quota;
-	}
 }

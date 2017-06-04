@@ -2,10 +2,21 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\ApiQuota;
+use App\Components\JsonBuilder;
+use App\Repositories\Interfaces\ApiQuotaRepositoryInterface;
+use App\Traits\JsonBuilderResponseTrait;
 use Closure;
 
 class VerifyApiQuota {
+	use JsonBuilderResponseTrait;
+
+	/* @var $repository ApiQuotaRepositoryInterface */
+	protected $repository;
+
+	public function __construct( ApiQuotaRepositoryInterface $repository ) {
+		$this->repository = $repository;
+	}
+
 	/**
 	 * Check if provided key reached quota limit and deny access or increase quota counter.
 	 *
@@ -15,18 +26,16 @@ class VerifyApiQuota {
 	 * @return mixed
 	 */
 	public function handle( $request, Closure $next ) {
-		$quota = ApiQuota::getCurrent( $request->key );
+		$quota = $this->repository->findCurrentQuotaForKey( $request->key );
 
 		if ( $quota->quota < $quota->maxQuota ) {
 			$quota->quota += 1;
 			$quota->save();
 		} else {
-			$json = [
-				'success' => false,
-				'message' => 'You have reached your quota limit for today.'
-			];
+			$jsonBuilder = new JsonBuilder();
+			$jsonBuilder->setError( 'You have reached your quota limit for today.' );
 
-			return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
+			return $this->jsonResponse( $jsonBuilder );
 		}
 
 		return $next( $request );

@@ -2,12 +2,23 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\ApiKey;
+use App\Components\JsonBuilder;
+use App\Repositories\Interfaces\ApiKeyRepositoryInterface;
+use App\Traits\JsonBuilderResponseTrait;
 use Closure;
 
 class VerifyApiKey {
+	use JsonBuilderResponseTrait;
+
+	/* @var $repository ApiKeyRepositoryInterface */
+	protected $repository;
+
+	public function __construct( ApiKeyRepositoryInterface $repository ) {
+		$this->repository = $repository;
+	}
+
 	/**
-	 * Check if provided key is valid an exists.
+	 * Check if provided key is valid and exists.
 	 *
 	 * @param  \Illuminate\Http\Request $request
 	 * @param  \Closure $next
@@ -15,13 +26,12 @@ class VerifyApiKey {
 	 * @return mixed
 	 */
 	public function handle( $request, Closure $next ) {
-		if ( ! $request->has( 'key' ) || ! ApiKey::where( [ [ 'key', '=', $request->key ] ] )->first() ) {
-			$json = [
-				'success' => false,
-				'message' => 'Wrong API key.'
-			];
+		if ( ! $request->has( 'key' ) || ! $this->repository->keyExists( $request->key ) ) {
 
-			return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
+			$jsonBuilder = new JsonBuilder();
+			$jsonBuilder->setError( 'Wrong API key.' );
+
+			return $this->jsonResponse( $jsonBuilder );
 		}
 
 		return $next( $request );
