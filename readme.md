@@ -16,6 +16,7 @@ The purpose of this application was to create a simple project based on Laravel 
 - Usage of Routes
 - Usage of Middleware
 - Usage of custom Artisan commands
+- Repository Design Pattern ([\[1\]](https://bosnadev.com/2015/03/07/using-repository-pattern-in-laravel-5/), [\[2\]](http://shawnmc.cool/the-repository-pattern))
 
 ### Frontend
 
@@ -43,7 +44,9 @@ The theme is built using laravel-mix, SCSS and jQuery. It's using Twitter Bootst
 - `app/Console/Commands/ImportVehicleXml.php` - imports Vehicle data from XML
 - `app/Middleware/VerifyApiKey.php` - Used for API authentication. Checks if provided key exists.
 - `app/Middleware/VerifyApiQuota.php` - Used for API quotas. Limits number of requests that can be performed.
-- `app/ApiKey.php`, `app/ApiQuota.php`, `app/Vehicle.php` - Models used in Eloquent
+- `app/Models/ApiKey.php`, `app/Models/ApiQuota.php`, `app/Models/Vehicle.php` - Models used in Eloquent
+- `app/Components/JsonBuilder.php`, `app/Traits/JsonBuilderResponseTrait.php` - Used for clean building of JSON responses
+- `app/Repositories` - Various Repositories that follow Repository Design Pattern
 - `resources/views` - Blade templates
 - `resources/assets` - JS and CSS
 - `routes/web.php` - routes config
