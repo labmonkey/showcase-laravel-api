@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\JsonBuilder;
 use App\Models\ApiKey;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Routing\Controller;
 
-class ApiController extends BaseController {
+class ApiController extends Controller {
 
 	/**
 	 * This action performs full text search on Vehicles to find data based on 'query' string
@@ -17,78 +18,63 @@ class ApiController extends BaseController {
 
 		$models = Vehicle::search( $query )->get();
 
-		$json = [
-			'success' => true,
-			'query'   => $query,
-			'count'   => count( $models ),
-			'data'    => $models
-		];
+		$jsonBuilder = new JsonBuilder();
+		$jsonBuilder->setParam( 'query', $query );
+		$jsonBuilder->setParam( 'count', count( $models ) );
+		$jsonBuilder->setData( $models );
 
-		return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
+		return $this->jsonResponse( $jsonBuilder );
 	}
 
 	public function actionKey() {
 		$apiKey = ApiKey::generateModel();
 
-		$json = [
-			'key' => $apiKey->key
-		];
+		$jsonBuilder = new JsonBuilder();
+		$jsonBuilder->setSuccess();
+		$jsonBuilder->setParam( 'key', $apiKey->key );
 
-		return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
+		return $this->jsonResponse( $jsonBuilder );
 	}
 
 	public function actionPublicIndex() {
-		$models = Vehicle::all();
+		$jsonBuilder = new JsonBuilder();
+		$models      = Vehicle::all();
 		if ( count( $models ) ) {
-			$json = [
-				'success' => true,
-				'data'    => $models
-			];
+			$jsonBuilder->setSuccess();
+			$jsonBuilder->setData( $models );
 		} else {
-			$json = [
-				'success' => false,
-				'message' => "Database Error. Maybe it's empty?"
-			];
+			$jsonBuilder->setError( "Database Error. Maybe it's empty?" );
 		}
 
-		return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
+		return $this->jsonResponse( $jsonBuilder );
 	}
 
 	public function actionPublicCar( $id = null ) {
+		$jsonBuilder = new JsonBuilder();
 		if ( ! $id ) {
 			// get random model
 			$model = Vehicle::inRandomOrder()->first();
 			if ( $model ) {
-				$json = [
-					'success' => true,
-					'data'    => [
-						$model
-					]
-				];
+				$jsonBuilder->setSuccess();
+				$jsonBuilder->setData( $model );
 			} else {
-				$json = [
-					'success' => false,
-					'message' => "Database Error. Maybe it's empty?"
-				];
+				$jsonBuilder->setError( "Database Error. Maybe it's empty?" );
 			}
 		} else {
 			// get model by id
 			$model = Vehicle::where( [ 'id' => $id ] )->first();
 			if ( $model ) {
-				$json = [
-					'success' => true,
-					'data'    => [
-						$model
-					]
-				];
+				$jsonBuilder->setSuccess();
+				$jsonBuilder->setData( $model );
 			} else {
-				$json = [
-					'success' => false,
-					'message' => "Vehicle with given ID doesn't exist."
-				];
+				$jsonBuilder->setError( "Vehicle with given ID doesn't exist." );
 			}
 		}
 
-		return response()->json( $json, 200, [], JSON_PRETTY_PRINT );
+		return $this->jsonResponse( $jsonBuilder );
+	}
+
+	protected function jsonResponse( $jsonBuilder ) {
+		return response()->json( $jsonBuilder->toArray(), 200, [], JSON_PRETTY_PRINT );
 	}
 }
